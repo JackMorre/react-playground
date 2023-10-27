@@ -1,82 +1,168 @@
 import { useState } from "react";
 
-function App() {
-  const [bill, setBill] = useState(0);
-  const [personOnePercentage, setPersonOnePercentage] = useState(0);
-  const [personTwoPercentage, setPersonTwoPercentage] = useState(0);
+const initialFriends = [
+  {
+    id: 118836,
+    name: "Clark",
+    image: "https://i.pravatar.cc/48?u=118836",
+    balance: -7,
+  },
+  {
+    id: 933372,
+    name: "Sarah",
+    image: "https://i.pravatar.cc/48?u=933372",
+    balance: 20,
+  },
+  {
+    id: 499476,
+    name: "Anthony",
+    image: "https://i.pravatar.cc/48?u=499476",
+    balance: 0,
+  },
+];
 
-  const updateBill = function ({ target }) {
-    setBill(Number(target.value));
-  };
+function Button({ children, onClick }) {
+  return (
+    <button
+      className="button"
+      onClick={() => {
+        onClick();
+      }}
+    >
+      {children}
+    </button>
+  );
+}
 
-  const updatePecentages = function ({ target }, funct) {
-    funct(Number(target.value));
-  };
+export default function App() {
+  const [friends, setFriends] = useState(initialFriends);
+  const [showAddFriend, setShowAddFriend] = useState(false);
 
-  function handleReset() {
-    setBill(0);
-    setPersonOnePercentage(0);
-    setPersonTwoPercentage(0);
+  function handleShowAddFriend() {
+    setShowAddFriend((show) => !show);
   }
 
-  const tip = (bill * (personOnePercentage + personTwoPercentage)) / 2 / 100;
-  return (
-    <div className="App">
-      <div>
-        <label for="bill-total">How much was the bill?</label>
-        <input
-          type="text"
-          id="bill-total"
-          name="bill-total"
-          value={bill}
-          onChange={updateBill}
-        ></input>
-      </div>
-      <div>
-        <label for="person-one-service">How did you like your service?</label>
-        <select
-          type="text"
-          id="person-one-service"
-          name="person-one-service"
-          value={personOnePercentage}
-          onChange={(e) => {
-            updatePecentages(e, setPersonOnePercentage);
-          }}
-        >
-          <option value="0">0%</option>
-          <option value="5">5%</option>
-          <option value="10">10%</option>
-          <option value="15">15%</option>
-          <option value="20">20%</option>
-        </select>
-      </div>
+  function handleAddFriend(friend) {
+    setFriends((friends) => [...friends, friend]);
+    setShowAddFriend(false);
+  }
 
-      <div>
-        <label for="person-two-service">
-          How did you friend like the service?
-        </label>
-        <select
-          type="text"
-          id="person-two-service"
-          name="person-two-service"
-          value={personTwoPercentage}
-          onChange={(e) => {
-            updatePecentages(e, setPersonTwoPercentage);
-          }}
-        >
-          <option value="0">0%</option>
-          <option value="5">5%</option>
-          <option value="10">10%</option>
-          <option value="15">15%</option>
-          <option value="20">20%</option>
-        </select>
+  return (
+    <div className="app">
+      <div className="sidebar">
+        <FriendsList friends={friends} />
+        {showAddFriend && <FormAddFriends onAddFriend={handleAddFriend} />}
+
+        <Button onClick={handleShowAddFriend}>
+          {showAddFriend ? "Close" : "Add Friend"}
+        </Button>
       </div>
-      <h2>
-        You pay £{Math.floor(bill + tip)}(£{!bill ? 0 : bill}+£{tip} tip)
-      </h2>
-      <button onClick={handleReset}>Reset</button>
+      <FormSplitBill />
     </div>
   );
 }
 
-export default App;
+function FriendsList({ friends }) {
+  return (
+    <ul>
+      {friends.map((friend) => {
+        return <Friend friend={friend} key={friend.id} />;
+      })}
+    </ul>
+  );
+}
+
+function Friend({ friend }) {
+  return (
+    <li>
+      <img src={friend.image} alt={friend.name}></img>
+      <h3>{friend.name}</h3>
+
+      {friend.balance < 0 && (
+        <p className="red">
+          You owe {friend.name} £{Math.abs(friend.balance)}
+        </p>
+      )}
+      {friend.balance > 0 && (
+        <p className="green">
+          {friend.name} owes you £{Math.abs(friend.balance)}
+        </p>
+      )}
+      {friend.balance === 0 && (
+        <p className="">You and {friend.name} are even</p>
+      )}
+      <Button>Select</Button>
+    </li>
+  );
+}
+
+function FormAddFriends({ onAddFriend }) {
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("https://i.pravatar.cc/48");
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    if (!image || !name) return;
+
+    const id = crypto.randomUUID();
+
+    const newFriend = {
+      name,
+      image: `${image}?=${id}`,
+      balance: 0,
+      id,
+    };
+
+    onAddFriend(newFriend);
+
+    setName("");
+    setImage("https://i.pravatar.cc/48");
+  }
+  return (
+    <form
+      className="form-add-friend"
+      onSubmit={(e) => {
+        handleSubmit(e);
+      }}
+    >
+      <label>👫 Friend Name</label>
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => {
+          setName(e.target.value);
+        }}
+      />
+      <label>🖼 URL Image</label>
+      <input
+        type="text"
+        value={image}
+        onChange={(e) => {
+          setImage(e.target.value);
+        }}
+      />
+      <button className="button">Add</button>
+    </form>
+  );
+}
+
+function FormSplitBill() {
+  return (
+    <form className="form-split-bill">
+      <h2>Split Your bill with X</h2>
+      <label>💰 Bill Value</label>
+      <input type="text" />
+      <label>🧍🏻‍♂️ Your Expense</label>
+      <input type="text" />
+      <label>🧍🏻 X's Expense</label>
+      <input type="text" disabled />
+      <label>Who is paying the bill?</label>
+      <select>
+        <option value="user">You</option>
+        <option value="friend">X</option>
+      </select>
+      <Button>Split Bill</Button>
+    </form>
+  );
+}
