@@ -1,0 +1,145 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row-reverse;
+  height: 100vh;
+  gap: 2rem;
+  background-color: #f5efff;
+}
+
+.container {
+  height: 25rem;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.menu {
+  background-color: white;
+  width: 15rem;
+}
+
+.menu h1,
+.title {
+  font-size: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #a594f9;
+}
+
+.menu h2 {
+  font-size: 1.2rem;
+}
+
+.list {
+  background-color: white;
+  width: 20rem;
+}
+
+.list ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainList {
+  list-style: none;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.menu .card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  /* padding: 0.5rem; */
+  border-radius: 10px;
+  padding: 0.25rem 0 0.25rem 0.25rem;
+  border: 2px solid white;
+}
+
+ul li {
+  cursor: pointer;
+}
+
+.text-container {
+  width: 100%;
+}
+
+.text-container h3 {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.listAmount {
+  background-color: #9b90d5;
+  width: fit-content;
+  padding: 0 0.5rem;
+  border-radius: 10px;
+  color: white;
+  font-size: 0.7rem;
+}
+
+.selected {
+  border: 2px solid #9b90d5 !important;
+}
+
+.mainList input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 10px;
+  border: 2px solid #a594f9;
+  box-sizing: border-box;
+}
+
+.listItems {
+  overflow-y: scroll;
+}
+
+.listItems input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1px solid white;
+  box-sizing: border-box;
+}
+
+.listItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.deleteIcon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  cursor: pointer;
+  opacity: 0;
+  display: none;
+}
+
+.visable {
+  opacity: 1;
+  display: block;
+}
+
+button {
+  background-color: white;
+  border: none;
+}

@@ -1,99 +1,73 @@
-import { useState } from "react";
-import ToDoList from "./components/ToDoList";
-import ToDoListsMenu from "./components/ToDoListsMenu";
-
-const fakeList = [
-  {
-    id: 1,
-    title: "stuff to do at home",
-    list: [
-      { id: 567, item: "walk the dog" },
-      { id: 327, item: "walk the dog" },
-      { id: 914, item: "walk the dog" },
-      { id: 456, item: "walk the dog" },
-      { id: 728, item: "walk the dog" },
-      { id: 672, item: "walk the dog" },
-    ],
-  },
-  {
-    id: 2,
-    title: "shopping list",
-    list: [
-      { id: 174, item: "walk the dog" },
-      { id: 492, item: "walk the dog" },
-      { id: 503, item: "walk the dog" },
-      { id: 297, item: "walk the dog" },
-      { id: 396, item: "walk the dog" },
-      { id: 267, item: "walk the dog" },
-    ],
-  },
-  {
-    id: 3,
-    title: "work",
-    list: [
-      { id: 2673, item: "walk the dog" },
-      { id: 627, item: "walk the dog" },
-      { id: 909, item: "walk the dog" },
-      { id: 926, item: "walk the dog" },
-      { id: 472, item: "walk the dog" },
-      { id: 267, item: "walk the dog" },
-    ],
-  },
-];
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 export default function App() {
-  const [selected, setSelected] = useState(null);
-  const [lists, setList] = useState(fakeList);
-
-  function handleSelectedList(list) {
-    setSelected(list);
+  function onSubmit(values, actions) {
+    const newData = { name: values.name, password: values.password };
+    localStorage.setItem("listItem", JSON.stringify(newData));
+    actions.resetForm();
   }
 
-  function handleAddToList(addedItem) {
-    const id = crypto.randomUUID();
-    const newItem = { id, item: addedItem };
-    const newList = [...selected.list, newItem];
-    console.log(newList);
+  const passwordRules =
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 
-    const updatedList = lists.map((mainlist) => {
-      if (mainlist.id === selected.id) {
-        mainlist.list = newList;
-        return mainlist;
-      } else return mainlist;
-    });
+  const basicSchema = yup.object().shape({
+    name: yup.string().required("Requires a valid username"),
+    password: yup
+      .string()
+      .min(5)
+      .matches(passwordRules, "Please include uppercase, lowercase, number")
+      .required("Requires a valid password"),
+  });
 
-    setList(updatedList);
-  }
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      password: "",
+    },
+    validationSchema: basicSchema,
+    onSubmit,
+  });
 
-  function handleUpdateList(newItem) {
-    if (selected) {
-      const newlist = selected.list.map((item) => {
-        if (item.id === newItem.id) {
-          return newItem;
-        } else return item;
-      });
-
-      const updatedList = lists.map((mainlist) => {
-        if (mainlist.id === selected.id) {
-          mainlist.list = newlist;
-          return mainlist;
-        } else return mainlist;
-      });
-
-      setList(updatedList);
-    }
-  }
+  console.log(formik.errors);
 
   return (
-    <main>
-      {selected && (
-        <ToDoList
-          list={selected}
-          onHandleUpdateList={handleUpdateList}
-          onAddingToList={handleAddToList}
-        />
+    <form onSubmit={formik.handleSubmit}>
+      <label htmlFor="name">Username</label>
+      <input
+        value={formik.values.name}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        type="text"
+        placeholder="name"
+        id="name"
+        name="name"
+        className={
+          formik.errors.name && formik.touched.name ? "input-error" : ""
+        }
+      ></input>
+      {formik.errors.name && formik.touched.name && (
+        <p className="error-msg">{formik.errors.name}</p>
       )}
-      <ToDoListsMenu onCardClick={handleSelectedList} fakeList={lists} />
-    </main>
+      <label htmlFor="password">Password</label>
+      <input
+        value={formik.values.password}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        type="password"
+        placeholder="password"
+        id="password"
+        name="password"
+        className={
+          formik.errors.password && formik.touched.password ? "input-error" : ""
+        }
+      ></input>
+      {formik.errors.password && formik.touched.password && (
+        <p className="error-msg">{formik.errors.password}</p>
+      )}
+      <button disabled={formik.isSubmitting} type="submit">
+        Submit
+      </button>
+    </form>
   );
 }
