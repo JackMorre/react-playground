@@ -49,13 +49,13 @@ export default function Notification({ notification }) {
   if (notification.type === "commentPhoto") {
     return (
       <li className={`note ${!notification.read ? "unread" : ""}`}>
-        <p className="note-info">
+        <div className="note-info">
           <a href="">{notification.data.name}</a>
-          {` commented on your photo.`}
+          <span> commented on your photo.</span>
           <div className="last">
-            <p>img</p>
+            <span>img</span>
           </div>
-        </p>
+        </div>
       </li>
     );
   }
@@ -72,9 +72,4 @@ export default function Notification({ notification }) {
       </li>
     );
   }
-  return (
-    <li className={`note ${!notification.read ? "unread" : ""}`}>
-      <h1>Hello</h1>
-    </li>
-  );
 }

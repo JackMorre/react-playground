@@ -10,7 +10,7 @@ export default function NotificationList({
       <div className="title-card">
         <div className="title-container">
           <h2>Notifications</h2>
-          <h3>{unreadNote}</h3>
+          <h3 className="unreadNotes">{unreadNote}</h3>
         </div>
         <button className="mark-all" onClick={handleReadAll}>
           Mark all as read

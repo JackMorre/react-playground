@@ -21,6 +21,13 @@
   align-items: center;
 }
 
+.unreadNotes {
+  background-color: rgb(204, 228, 248);
+  padding: 0.3rem 0.8rem;
+  border-radius: 10px;
+  margin-left: 0.5rem;
+}
+
 .notifications {
   display: flex;
   flex-direction: column;
