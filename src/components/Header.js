@@ -107,6 +107,7 @@ function ResponsiveAppBar() {
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
+    console.log(unreadNote.length);
   };
 
   const handleCloseNavMenu = () => {
@@ -212,6 +213,7 @@ function ResponsiveAppBar() {
               <Badge
                 color="error"
                 variant="dot"
+                invisible={unreadNote.length < 1 ? true : false}
                 onClick={() => {
                   toggleNotifications();
                 }}
