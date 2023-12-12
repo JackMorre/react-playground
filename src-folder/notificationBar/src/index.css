@@ -1,0 +1,74 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+}
+
+.notification-list {
+  max-width: 350px;
+  background-color: rgb(215, 233, 248);
+  padding: 0.5rem;
+}
+
+.title-card {
+  display: flex;
+  justify-content: space-between;
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+}
+
+.unreadNotes {
+  background-color: rgb(204, 228, 248);
+  padding: 0.3rem 0.8rem;
+  border-radius: 10px;
+  margin-left: 0.5rem;
+}
+
+.notifications {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+}
+
+.mark-all {
+  border: none;
+  background-color: unset;
+  cursor: pointer;
+}
+
+.mark-all:hover {
+  text-decoration: underline;
+}
+
+ul {
+  list-style: none;
+  align-items: center;
+}
+
+.unread {
+  background-color: rgb(204, 228, 248);
+}
+
+.last {
+  position: relative;
+}
+.note {
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.unread .note-info .last::after {
+  content: "";
+  position: absolute;
+  top: 48%;
+  right: -10px;
+  height: 5px;
+  width: 5px;
+  border-radius: 100px;
+  background-color: red;
+}
