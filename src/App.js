@@ -1,76 +1,72 @@
-import { useState } from "react";
-import "./index.css";
+import { useEffect, useState } from "react";
+
+// https://api.frankfurter.app/latest?amount=100&from=EUR&to=USD`
 
 export default function App() {
-  return (
-    <div>
-      <TextExpander>
-        Space travel is the ultimate adventure! Imagine soaring past the stars
-        and exploring new worlds. It's the stuff of dreams and science fiction,
-        but believe it or not, space travel is a real thing. Humans and robots
-        are constantly venturing out into the cosmos to uncover its secrets and
-        push the boundaries of what's possible.
-      </TextExpander>
+  const [amount, setAmount] = useState("");
+  const [fromCurrency, setfromCurrency] = useState("USD");
+  const [toCurrency, setToCurrency] = useState("USD");
+  const [exchange, setExchange] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-      <TextExpander
-        collapsedNumWords={20}
-        expandButtonText="Show text"
-        collapseButtonText="Collapse text"
-        buttonColor="#ff6622"
-      >
-        Space travel requires some seriously amazing technology and
-        collaboration between countries, private companies, and international
-        space organizations. And while it's not always easy (or cheap), the
-        results are out of this world. Think about the first time humans stepped
-        foot on the moon or when rovers were sent to roam around on Mars.
-      </TextExpander>
+  useEffect(
+    function () {
+      const fetchData = async () => {
+        if (!amount) return;
+        setIsLoading(true);
+        const res = await fetch(
+          `https://api.frankfurter.app/latest?amount=${amount}&from=${fromCurrency}&to=${toCurrency}`
+        );
+        const data = await res.json();
+        setExchange(data.rates[toCurrency]);
+        setIsLoading(false);
+      };
 
-      <TextExpander expanded={true} className="box">
-        Space missions have given us incredible insights into our universe and
-        have inspired future generations to keep reaching for the stars. Space
-        travel is a pretty cool thing to think about. Who knows what we'll
-        discover next!
-      </TextExpander>
-    </div>
+      if (fromCurrency === toCurrency) return setExchange(amount);
+      fetchData();
+    },
+    [amount, fromCurrency, toCurrency]
   );
-}
-
-function TextExpander({
-  children,
-  collapsedNumWords = 10,
-  expanded = false,
-  expandButtonText = "open",
-  collapseButtonText = "close",
-  buttonColor = "blue",
-}) {
-  const [expandedBol, setExpandedBol] = useState(expanded);
-
-  const arr =
-    children
-      .split(" ")
-      .filter((_, i) => {
-        return i < collapsedNumWords;
-      })
-      .join(" ") + "...";
-
-  const handleExpand = () => {
-    setExpandedBol(!expandedBol);
-  };
-
-  const buttonStyles = {
-    backgroundColor: "unset",
-    border: "none",
-    color: buttonColor,
-    textDecoration: "underline",
-    cursor: "pointer",
-  };
 
   return (
     <div>
-      {!expandedBol ? arr : children}
-      <button style={buttonStyles} onClick={handleExpand}>
-        {!expandedBol ? expandButtonText : collapseButtonText}
-      </button>
+      <input
+        type="text"
+        value={amount}
+        onChange={(e) => setAmount(Number(e.target.value))}
+        disabled={isLoading}
+      />
+      <select
+        value={fromCurrency}
+        onChange={(e) => {
+          setfromCurrency(e.target.value);
+        }}
+        disabled={isLoading}
+      >
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="CAD">CAD</option>
+        <option value="INR">INR</option>
+      </select>
+      <select
+        value={toCurrency}
+        onChange={(e) => {
+          setToCurrency(Number(e.target.value));
+        }}
+        disabled={isLoading}
+      >
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="CAD">CAD</option>
+        <option value="INR">INR</option>
+      </select>
+      {!isLoading ? (
+        <p>
+          {exchange} {toCurrency}
+        </p>
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
   );
 }
